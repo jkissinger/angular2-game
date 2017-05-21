@@ -25,7 +25,7 @@ export class GameState implements AfterViewInit {
         let height = window.innerHeight - 50;
         this.canvas = new AngularCanvas(width, height);
         this.player = new PlayerIcon(0, 50, 0, 50);
-        this.finishLine = new FinishIcon(75, width - 25, 75, height - 25);
+        this.finishLine = new FinishIcon(75, width - 75, 75, height - 75);
         this.highScore = new HighScore();
         this.canvas.registerIcon(this.player);
         this.canvas.registerIcon(this.finishLine);
