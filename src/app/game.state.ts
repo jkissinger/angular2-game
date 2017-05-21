@@ -7,7 +7,7 @@ import { FinishIcon } from './game.icon.finish';
 @Component({
     selector: 'app-root',
     template: ``,
-    host: { '(document:keydown)': 'handleKeyboardEvents($event)', '(document:mousedown)': 'handleMouseEvent($event)', '(document:touchend)': 'handleTouchEvent($event)' }
+    host: { '(document:keydown)': 'handleKeyboardEvents($event)', '(document:mousedown)': 'handleMouseEvent($event)', '(document:touchstart)': 'handleTouchEvent($event)' }
 })
 export class GameState implements AfterViewInit {
     canvas: AngularCanvas;
