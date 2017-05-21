@@ -7,7 +7,7 @@ import { FinishIcon } from './game.icon.finish';
 @Component({
     selector: 'app-root',
     template: ``,
-    host: { '(document:keydown)': 'handleKeyboardEvents($event)', '(document:mousedown)': 'handleMouseEvents($event)' }
+    host: { '(document:keydown)': 'handleKeyboardEvents($event)' }
 })
 export class GameState implements AfterViewInit {
     canvas: AngularCanvas;
@@ -24,9 +24,11 @@ export class GameState implements AfterViewInit {
         let width = window.innerWidth - 50;
         let height = window.innerHeight - 50;
         this.canvas = new AngularCanvas(width, height);
-        this.canvas.canvas.addEventListener('click', this.handleMouseEvents(<MouseEvent>event));
+        this.canvas.canvas.addEventListener('click', this.handleMouseEvent(<MouseEvent>event));
+        //touchend
+        this.canvas.canvas.ontouchend(this.handleTouchEvent(<TouchEvent>event));
         this.player = new PlayerIcon(0, 50, 0, 50);
-        this.finishLine = new FinishIcon(75, width-25, 75, height-25);
+        this.finishLine = new FinishIcon(75, width - 25, 75, height - 25);
         this.highScore = new HighScore();
         this.canvas.registerIcon(this.player);
         this.canvas.registerIcon(this.finishLine);
@@ -42,12 +44,24 @@ export class GameState implements AfterViewInit {
         this.score = Math.floor(Math.sqrt(a * a + b * b));
     }
 
-    handleMouseEvents(event: MouseEvent): any {
-        if (this.player && event) {
+    handleTouchEvent(event: TouchEvent): any {
+        if (event) {
+            this.movePlayerRelative(event.touches[0].pageX, event.touches[0].pageY);
+        }
+    }
+
+    handleMouseEvent(event: MouseEvent): any {
+        if (event) {
+            this.movePlayerRelative(event.x, event.y);
+        }
+    }
+
+    movePlayerRelative(x: number, y: number) {
+        if (this.player) {
             let center = this.player.getCenter();
             this.canvas.adjustCoords(center);
-            this.player.x = this.player.x + Math.floor((event.x - center[0]) / 10);
-            this.player.y = this.player.y + Math.floor((event.y - center[1]) / 10);
+            this.player.x = this.player.x + Math.floor((x - center[0]) / 10);
+            this.player.y = this.player.y + Math.floor((y - center[1]) / 10);
             this.score = this.score - 1;
             this.refreshCanvas();
         }
