@@ -8,6 +8,7 @@ export class AngularCanvas {
     constructor(width: number, height: number) {
         console.log("Constructed Canvas");
         this.canvas = document.createElement('canvas');
+        this.canvas.classList.add('canvas');
         this.canvas.width = width;
         this.canvas.height = height;
         this.context = this.canvas.getContext("2d");

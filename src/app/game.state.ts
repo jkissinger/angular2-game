@@ -6,8 +6,8 @@ import { FinishIcon } from './game.icon.finish';
 
 @Component({
     selector: 'app-root',
-    template: ``,
-    host: { '(document:keydown)': 'handleKeyboardEvents($event)', '(document:mousedown)': 'handleMouseEvent($event)', '(document:touchstart)': 'handleTouchEvent($event)' }
+    template: '',
+    host: { '(document:keydown)': 'handleKeyboardEvents($event)', '(document:click)': 'handleMouseEvent($event)', '(document:touchstart)': 'handleTouchEvent($event)' }
 })
 export class GameState implements AfterViewInit {
     canvas: AngularCanvas;
@@ -24,7 +24,7 @@ export class GameState implements AfterViewInit {
         let width = window.innerWidth - 50;
         let height = window.innerHeight - 50;
         this.canvas = new AngularCanvas(width, height);
-        this.player = new PlayerIcon(0, 50, 0, 50);
+        this.player = new PlayerIcon(20, 50, 20, 50);
         this.finishLine = new FinishIcon(75, width - 75, 75, height - 75);
         this.highScore = new HighScore();
         this.canvas.registerIcon(this.player);
@@ -38,7 +38,7 @@ export class GameState implements AfterViewInit {
         this.canvas.refresh();
         let a = this.player.x - this.finishLine.x;
         let b = this.player.y - this.finishLine.y;
-        this.score = Math.floor(Math.sqrt(a * a + b * b));
+        this.score = 100;
     }
 
     handleTouchEvent(event: TouchEvent): any {
