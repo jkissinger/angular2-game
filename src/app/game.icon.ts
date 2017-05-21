@@ -18,6 +18,10 @@ export class GameIcon {
         this.maxY = maxY;
     }
 
+    getCenter() {
+        return [Math.floor(this.x + this.width / 2), Math.floor(this.y + this.height / 2)];
+    }
+
     setRandomLocation() {
         this.x = Math.floor(Math.random() * this.maxX) + this.minX;
         this.y = Math.floor(Math.random() * this.maxY) + this.minY;
@@ -37,5 +41,12 @@ export class GameIcon {
 
     moveDown(distance: number) {
         this.y = this.y + distance;
+    }
+
+    draw(context: CanvasRenderingContext2D) {
+        context.font = this.font;
+        context.fillStyle = this.color;
+        context.fillRect(this.x, this.y, this.width, this.height);
+        context.fillText(this.name, this.x, this.y);
     }
 }

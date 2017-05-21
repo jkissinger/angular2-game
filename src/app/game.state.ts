@@ -7,7 +7,7 @@ import { FinishIcon } from './game.icon.finish';
 @Component({
     selector: 'app-root',
     template: ``,
-    host: { '(document:keydown)': 'handleKeyboardEvents($event)' }
+    host: { '(document:keydown)': 'handleKeyboardEvents($event)', '(document:mousedown)': 'handleMouseEvents($event)' }
 })
 export class GameState implements AfterViewInit {
     canvas: AngularCanvas;
@@ -21,9 +21,12 @@ export class GameState implements AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.canvas = new AngularCanvas(500, 500);
+        let width = window.innerWidth - 50;
+        let height = window.innerHeight - 50;
+        this.canvas = new AngularCanvas(width, height);
+        this.canvas.canvas.addEventListener('click', this.handleMouseEvents(<MouseEvent>event));
         this.player = new PlayerIcon(0, 50, 0, 50);
-        this.finishLine = new FinishIcon(75, 400, 75, 400);
+        this.finishLine = new FinishIcon(75, width-25, 75, height-25);
         this.highScore = new HighScore();
         this.canvas.registerIcon(this.player);
         this.canvas.registerIcon(this.finishLine);
@@ -37,6 +40,17 @@ export class GameState implements AfterViewInit {
         let a = this.player.x - this.finishLine.x;
         let b = this.player.y - this.finishLine.y;
         this.score = Math.floor(Math.sqrt(a * a + b * b));
+    }
+
+    handleMouseEvents(event: MouseEvent): any {
+        if (this.player && event) {
+            let center = this.player.getCenter();
+            this.canvas.adjustCoords(center);
+            this.player.x = this.player.x + Math.floor((event.x - center[0]) / 10);
+            this.player.y = this.player.y + Math.floor((event.y - center[1]) / 10);
+            this.score = this.score - 1;
+            this.refreshCanvas();
+        }
     }
 
     handleKeyboardEvents(event: KeyboardEvent) {

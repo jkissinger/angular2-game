@@ -26,10 +26,7 @@ export class AngularCanvas {
 
     drawIcons() {
         for (let icon of this.icons) {
-            this.context.font = icon.font;
-            this.context.fillStyle = icon.color;
-            this.context.fillRect(icon.x, icon.y, icon.width, icon.height);
-            this.context.fillText(icon.name, icon.x, icon.y);
+            icon.draw(this.context);
         }
     }
 
@@ -61,5 +58,10 @@ export class AngularCanvas {
     refresh() {
         this.clear();
         this.drawIcons();
+    }
+
+    adjustCoords(coords: Array<number>) {
+        coords[0] = coords[0] + this.canvas.offsetLeft;
+        coords[1] = coords[1] + this.canvas.offsetTop;
     }
 }
