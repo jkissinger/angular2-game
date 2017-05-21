@@ -1,5 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { AngularCanvas } from './app.canvas';
+import { HighScore } from './game.highscore';
 import { PlayerIcon } from './game.icon.player';
 import { FinishIcon } from './game.icon.finish';
 
@@ -12,6 +13,8 @@ export class GameState implements AfterViewInit {
     canvas: AngularCanvas;
     player: PlayerIcon;
     finishLine: FinishIcon;
+    highScore: HighScore;
+    score: number;
 
     constructor() {
         console.log("Constructed Game State");
@@ -19,12 +22,21 @@ export class GameState implements AfterViewInit {
 
     ngAfterViewInit() {
         this.canvas = new AngularCanvas(500, 500);
-        this.canvas.clear();
-        this.player = new PlayerIcon(40, 40);
-        this.canvas.registerIcon(this.player);
+        this.player = new PlayerIcon(0, 50, 0, 50);
         this.finishLine = new FinishIcon(75, 400, 75, 400);
+        this.highScore = new HighScore();
+        this.canvas.registerIcon(this.player);
         this.canvas.registerIcon(this.finishLine);
+        this.loadNewGameState();
+    }
+
+    loadNewGameState() {
+        this.player.setRandomLocation();
+        this.finishLine.setRandomLocation();
         this.canvas.refresh();
+        let a = this.player.x - this.finishLine.x;
+        let b = this.player.y - this.finishLine.y;
+        this.score = Math.floor(Math.sqrt(a * a + b * b));
     }
 
     handleKeyboardEvents(event: KeyboardEvent) {
@@ -39,6 +51,7 @@ export class GameState implements AfterViewInit {
         } else if (key == 40 || key == 83) {
             this.player.moveDown(stepDistance);
         }
+        this.score = this.score - 1;
         this.refreshCanvas();
     }
 
@@ -48,7 +61,9 @@ export class GameState implements AfterViewInit {
         for (let collided of collisions) {
             console.log(this.player.name + " collided with " + collided.name);
             if (collided == this.finishLine) {
-                alert("You win!");
+                alert("You win! Score: " + this.score);
+                this.highScore.registerNewScore(this.score);
+                this.loadNewGameState();
             }
         }
     }
